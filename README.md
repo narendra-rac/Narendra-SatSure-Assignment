@@ -1,13 +1,22 @@
-Hi Hiring Team at SatSure,
+# SatSure
 
-Thank you for considering my profile for this assignment.
+This repository contains Terraform code to provision infrastructure in the Azure cloud.
 
-Despite a busy schedule, I was able to complete the assignment to the best of my ability. Although we can implement the setup, time constraints limited what I could present.
+## Files
 
-This repository consists of two branches:
+- `setup-k8s-docker-minikube.sh`: This script installs Minikube on the server.
 
-infra: This branch contains the Terraform code to create a virtual machine on Azure Cloud and install Minikube on the VM.
-grafana: This branch contains the code for Grafana.
-To implement this, we need to set up the environment accordingly.
+## Improvements
 
-Please review the code and let me know if we can connect.
+### State Locking with Backend
+
+To ensure consistent state management and to avoid potential issues with concurrent Terraform operations, we can use state locking with a backend. Below is an example of how to configure the `azurerm` backend in your Terraform configuration:
+
+```hcl
+terraform {
+  backend "azurerm" {
+    storage_account_name = "iotfstate"
+    container_name       = "tfstate"
+    key                  = "ioqa1.tfstate"
+  }
+}
