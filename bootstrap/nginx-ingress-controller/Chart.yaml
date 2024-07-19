@@ -1,0 +1,8 @@
+apiVersion: v2
+name: ingress-nginx
+description: ingress-nginx
+version: 0.0.1
+dependencies:
+  - name: nginx-ingress
+    version: 1.3.0
+    repository: oci://ghcr.io/nginxinc/charts

@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    notifications.argoproj.io/subscribe.sync-operation-change.teams: argocd-alerts
+spec:
+  project: default
+  source:
+    repoURL: ""
+    targetRevision: HEAD
+    path: bootstrap/cert-manager
+
+  destination:
+    namespace: cert-manager
+    server: https://kubernetes.default.svc
+
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - Validate=false
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io # https://github.com/cert-manager/cert-manager/issues/4114
+      kind: ValidatingWebhookConfiguration
+      name: cert-manager-webhook
+      jqPathExpressions:
+        - .webhooks[].namespaceSelector.matchExpressions[] | select(.key == "control-plane")
+        - .webhooks[].namespaceSelector.matchExpressions[] | select(.key == "kubernetes.azure.com/managedby")

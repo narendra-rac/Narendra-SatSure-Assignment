@@ -1,0 +1,31 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-ingress-nginx
+  namespace: argocd
+  annotations:
+    nginx.org/server-tokens: "false"
+    nginx.org/server-snippets: |
+      allow 49.206.241.58;
+      allow 182.156.244.38;
+      allow 52.149.181.0;
+      allow 52.179.125.208;
+      deny all;
+
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - <>
+  rules:
+    - host: <>
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argo-cd-argocd-server
+                port:
+                  number: 80

@@ -1,0 +1,36 @@
+argo-cd:
+  dex:
+    enabled: false
+  redis-ha:
+    enabled: false
+  configs:
+    params:
+      server.insecure: true
+    rbac:
+      policy.default: role:readonly # or your switch to admin
+      policy.csv: |
+        p, role:org-admin, applications, *, */*, allow
+        p, role:org-admin, clusters, get, *, allow
+        p, role:org-admin, repositories, get, *, allow
+    cm:
+      url: "<>"
+      oidc.config: |
+        name: Azure
+        issuer: <>
+        clientID: <>
+        clientSecret: $oidc.azure.clientSecret
+        requestedIDTokenClaims:
+          groups:
+            essential: true
+        requestedScopes:
+          - openid
+          - profile
+          - email
+  server:
+    replicas: 1
+  controller:
+    replicas: 1
+  repoServer:
+    replicas: 1
+  applicationSet:
+    replicaCount: 1
